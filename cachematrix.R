@@ -4,29 +4,40 @@
 ## Below are a pair of functions that are used to create a special object that 
 ## stores a matrix and caches its inverse.
 
-## This function creates a special "matrix" object that can cache its inverse.
+# livrary(MASS) is used to calculate inverse for non squared as well as square matrices
+library(MASS)
 makeCacheMatrix <- function(x = matrix()) {
-  inverse <- NULL
+  inv <- NULL           
   set <- function(y){
-    x<<-y
-    inverse<<-NULL 
+         x<<-y
+         inv<<-NULL 
   }
-  get <- function(){x}
-  setInverse<-function(inversecalculada){inverse<<-inversecalculada}
-  getInverse<-function(){inverse}
+  #function to get matrix x
+  get <- function(){x}   
+  setinv<-function(inverse)
+    inv<<-inverse
+  getinv<-function(){
+                    inver<-ginv(x)
+                    inver%*%x       #this function to obtain inverse of the matrix
+                    
+  }
   list(set = set, get = get,
-       setInverse = setInverse,
-       getInverse = getInverse)
+       setinv = setinv,
+       getinv = getinv)
 }
-cachesolve <- function(x,...){
-  inverse <- x$getInverse()
-  if(!is.null(inverse)) {
-    message("getting cached data")
-    return(inverse)
+
+
+# This is used to get the cache data
+
+cacheSolve <- function(x,...){
+  inv <- x$getinv()
+  if(!is.null(inv)) {
+              message("getting cached data")
+              return(inv)                 #return inverse value
   }
   data<-x$get()
-  inverse <- solve(data,...)
-  x$setInverse(inverse)
-  inverse
+  inv <- solve(data,...)
+  x$setinv(inv)
+  inv
   #return a matrix that is the inverse of 'x'
 }
